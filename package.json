@@ -1,0 +1,12 @@
+{
+  "name": "instagram-discord-bridge",
+  "version": "1.0.0",
+  "main": "index.js",
+  "repository": "git@github.com:jake-walker/instagram-discord-bridge.git",
+  "author": "Jake Walker <hi@jakew.me>",
+  "license": "GPL-3.0",
+  "dependencies": {
+    "discord.js": "^11.5.0",
+    "instagram-private-api": "^1.8.0"
+  }
+}
