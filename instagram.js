@@ -21,8 +21,11 @@ module.exports.setup = async (msgReceived) => {
   log("Setting up Instagram...");
   // Create a 'virtual' device for running Instagram.
   api.state.generateDevice(config.instagram.username);
+  log("Logging into Instagram...");
   // Login with the username and password from config file, wait until done.
   await api.account.login(config.instagram.username, config.instagram.password);
+  var user = await api.account.currentUser();
+  log(`Logged in as ${user.username} (ID: ${user.pk})`);
 
   // Function to run every second to check for new messages.
   return setInterval(async () => {
@@ -110,23 +113,18 @@ async function handleMessages(threads, callback) {
         var avatar = user.profile_pic_url;
         // Get the type of message.
         var type = msg.item_type;
-        // Set the default message content
-        var content = "*[ Unsupported Message Type! ]*";
-        
-        switch (type) {
-          // If we have a TEXT message
-          case "text":
-            // The content of the message is just the text of the message
-            var content = msg.text;
-            break;
-          default:
-            // If we have any other type (e.g image) we don't know what to
-            // do, but print to the log so we can look later.
-            console.warn(`UNSUPPORTED MESSAGE TYPE '${type}'`, msg, user);
+
+        // Print out the message type, details and user for debugging purposes.
+        console.log(type, msg, user);
+
+        // If we don't have a message containing text...
+        if (!msg.text) {
+          // Skip
+          return;
         }
 
         // Now that we have a message, send them to discord.
-        callback(name, avatar, content, discordChannels);
+        callback(name, avatar, msg.text, discordChannels);
       });
 
       // Now that we have processed all the messages, set the last
