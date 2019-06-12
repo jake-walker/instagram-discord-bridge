@@ -3,6 +3,7 @@
 
 // Import the Discord library
 const Discord = require("discord.js");
+const tinyurl = require("tinyurl");
 // Create a new client
 const client = new Discord.Client();
 const config = require("./config");
@@ -69,7 +70,7 @@ client.on("ready", () => {
 
 // This function runs whenever the bot receives any message from
 // a Discord channel.
-client.on("message", (msg) => {
+client.on("message", async (msg) => {
   // Get a 'mapping' from the config corresponding to the channel that the message
   // is being sent from.
   var mapping = config.mappings.find((m) => m.discord == msg.channel.id);
@@ -77,6 +78,8 @@ client.on("message", (msg) => {
   // OR the message is sent by us OR the message was sent by a bot (which could be
   // also one of our messages if we used a webhook), then IGNORE the message (skip).
   if (!mapping || msg.author.id == client.user.id || msg.author.bot) { return; }
+  
+  let formatted = await formatMessage(msg);
 
   // Get the name of the user that sent the message
   var name = msg.author.username;
@@ -88,5 +91,18 @@ client.on("message", (msg) => {
   }
 
   // Send the message information over to be sent on Instagram as a message.
-  callback(name, msg.content, mapping.instagram);
+  callback(name, formatted, mapping.instagram);
 });
+
+async function formatMessage(msg) {
+  let output = "";
+
+  output += msg.cleanContent;
+
+  for (let [key, value] of msg.attachments.entries()) {
+    let shorten = await tinyurl.shorten(value.url);
+    output += ` ${shorten}`;
+  }
+
+  return output.trim();
+}
