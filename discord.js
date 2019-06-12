@@ -28,40 +28,37 @@ module.exports.setup = async (msgSent) => {
   callback = msgSent;
 }
 
-// Function to send a message to specific channel(s)
-module.exports.send = (name, avatar, content, targetChannels) => {
+// Function to send a message to specific channel
+module.exports.send = (name, avatar, content, targetChannel) => {
   log("Forwarding message to Discord...");
-  // For each of the channels that we need to send to
-  targetChannels.forEach((ch) => {
-    // Check if we have a webhook available to use from
-    // the config (this is preferred).
-    if (config.webhooks.hasOwnProperty(ch)) {
-      log("Sending webhook message...");
-      // Split the webhook info up into the ID and token.
-      const hookInfo = config.webhooks[ch].split("/");
-      // If we have more/less than we are expecting, skip.
-      if (hookInfo.length != 2) { return; }
-      // Create a new webhook client for interacting with the webhook.
-      const hook = new Discord.WebhookClient(hookInfo[0], hookInfo[1]);
-      // Send the message content along with the Instagram user's username
-      // and avatar (as a URL).
-      hook.send(content, {
-        username: name,
-        avatarURL: avatar
-      });
-    } else {
-      // If we don't have a webhook available, send as a standard message.
-      log("Sending standard message...");
-      // Find the channel that we need to send to.
-      var channel = client.channels.find((c) => c.id == ch);
-      // If we couldn't find the channel, skip.
-      if (!channel) { return; }
-      // Send a message to the channel with a bold username and
-      // the content.
-      channel.send(`**[${name}]** ${content}`);
-    }
-    log("Sent!");
-  });
+  // Check if we have a webhook available to use from
+  // the config (this is preferred).
+  if (config.webhooks.hasOwnProperty(targetChannel)) {
+    log("Sending webhook message...");
+    // Split the webhook info up into the ID and token.
+    const hookInfo = config.webhooks[targetChannel].split("/");
+    // If we have more/less than we are expecting, skip.
+    if (hookInfo.length != 2) { return; }
+    // Create a new webhook client for interacting with the webhook.
+    const hook = new Discord.WebhookClient(hookInfo[0], hookInfo[1]);
+    // Send the message content along with the Instagram user's username
+    // and avatar (as a URL).
+    hook.send(content, {
+      username: name,
+      avatarURL: avatar
+    });
+  } else {
+    // If we don't have a webhook available, send as a standard message.
+    log("Sending standard message...");
+    // Find the channel that we need to send to.
+    var channel = client.channels.find((c) => c.id == targetChannel);
+    // If we couldn't find the channel, skip.
+    if (!channel) { return; }
+    // Send a message to the channel with a bold username and
+    // the content.
+    channel.send(`**[${name}]** ${content}`);
+  }
+  log("Sent!");
 }
 
 // This function runs when the bot logged in and is ready
@@ -75,7 +72,7 @@ client.on("ready", () => {
 client.on("message", (msg) => {
   // Get a 'mapping' from the config corresponding to the channel that the message
   // is being sent from.
-  var mapping = config.mappings.find((m) => m.discord.includes(msg.channel.id));
+  var mapping = config.mappings.find((m) => m.discord == msg.channel.id);
   // If we couldn't find a 'mapping' (i.e this channel isn't setup in the config),
   // OR the message is sent by us OR the message was sent by a bot (which could be
   // also one of our messages if we used a webhook), then IGNORE the message (skip).

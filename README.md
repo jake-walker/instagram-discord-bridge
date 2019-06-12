@@ -4,8 +4,7 @@ This is a bot written in Node.js which takes messages from Instagram chats and f
 
 > ⚠️ **This bot is very janky at the moment.** The code is definitely not written in the best way (like checking messages from Instagram). Check the [known problems](#known-problems) section for more info.
 
-I am using this on a school Discord server, where people might not want to use Discord but can still join in from a linked
-Instagram chat.
+I am using this on a school Discord server, where people might not want to use Discord but can still join in from a linked Instagram chat (as Instagram is quite a popular chat method for people of my age).
 
 ## Known Problems
 
@@ -49,9 +48,7 @@ module.exports = {
     // Instagram Username
     username: "discordbridge",
     // Instagram Password
-    password: "Pa$$w0rd!",
-    // Instagram User ID (prevents sending own messages)
-    userid: "6896547667"
+    password: "Pa$$w0rd!"
   },
   // Discord Account Details
   discord: {
@@ -60,61 +57,23 @@ module.exports = {
   },
   // Channel Mappings
   mappings: [
-    // Example mapping of 1 Instagram chat to 1 Discord channel.
     {
-      // A list of Instagram **thread ids** go in here (min 1).
-      instagram: [
-        "692164687673640789327676765486452027680"
-      ],
-      // A list of Discord **channel ids** go in here (min 1).
-      discord: [
-        "806410543778673986"
-      ]
-    },
-    // Example mapping of 2 Instagram chats to 1 Discord channel.
-    {
-      // A list of Instagram **thread ids** go in here (min 1).
-      instagram: [
-        "690348989685685832070727853789805097762",
-        "689548667842765476547826854268754768505"
-      ],
-      // A list of Discord **channel ids** go in here (min 1).
-      discord: [
-        "986496785376854768"
-      ]
-    },
-    // Example mapping of 1 Instagram chats to 2 Discord channel.
-    {
-      // A list of Instagram **thread ids** go in here (min 1).
-      instagram: [
-        "984069858695468745768406784086708970457"
-      ],
-      // A list of Discord **channel ids** go in here (min 1).
-      discord: [
-        "638687456745867584",
-        "834698376078965478"
-      ]
+      // The Instagram thread id goes here.
+      instagram: "692164687673640789327676765486452027680",
+      // The Discord channel id goes here.
+      discord: "806410543778673986"
     },
     {
-      // A list of Instagram **thread ids** go in here (min 1).
-      instagram: [
-        "784567467854768762367549675476808647464",
-        "685496854764789678476458768540768407840",
-        "375685476547685478426543765479567493679",
-        "457897659786597856937886240567854307680"
-      ],
-      // A list of Discord **channel ids** go in here (min 1).
-      discord: [
-        "665468784789067896",
-        "678475860267845037"
-      ]
+      // The Instagram thread id goes here.
+      instagram: "690348989685685832070727853789805097762",
+      // The Discord channel id goes here.
+      discord: "986496785376854768"
     }
   ],
   // Webhook Mappings (optional)
   webhooks: {
     // Format: "{Discord Channel ID}": "{Discord Channel Webhook ID}/{Discord Channel Webhook Token}"
-    "806410543778673986": "648567895427682768/gheuighuept859ty87459wtu85ghw8lgyh89p5eyr8g9pysh8ggyh89twy89453yt8hs",
-    "678475860267845037": "648567895427682768/gheuighuept859ty87459wtu85ghw8lgyh89p5eyr8g9pysh8ggyh89twy89453yt8hs"
+    "806410543778673986": "648567895427682768/gheuighuept859ty87459wtu85ghw8lgyh89p5eyr8g9pysh8ggyh89twy89453yt8hs"
   }
 }
 ```

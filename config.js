@@ -3,8 +3,7 @@ module.exports = {
   // Instagram Account Details
   instagram: {
     username: "xxx",
-    password: "xxx",
-    userid: "xxx"
+    password: "xxx"
   },
   // Discord Account Details
   discord: {
@@ -13,12 +12,8 @@ module.exports = {
   // Channel Mappings
   mappings: [
     {
-      instagram: [
-        "xxx"
-      ],
-      discord: [
-        "xxx"
-      ]
+      instagram: "xxx",
+      discord: "xxx"
     }
   ],
   // Webhook Mappings
