@@ -5,6 +5,7 @@
 const apiClient = require('instagram-private-api').IgApiClient;
 const config = require("./config");
 const lastUpdate = require("./lastupdate");
+const tinyurl = require("tinyurl");
 
 // Create a new Instagram API instance
 const api = new apiClient();
@@ -114,32 +115,62 @@ async function handleMessages(threads, callback) {
     // For each of the messages that we need to process.
     messages.forEach(async (msg) => {
       // Get the user's profile information
-      var user = await api.user.info(msg.user_id);
+      let user = await api.user.info(msg.user_id);
       // Get the user's name, if they don't have a full name set
       // on their account, get their username.
-      var name = user.full_name || user.username;
+      let name = user.full_name || user.username;
       // Get the user's avatar URL (used as profile picture in Discord)
-      var avatar = user.profile_pic_url;
+      let avatar = user.profile_pic_url;
       // Get the type of message.
-      var type = msg.item_type;
+      let type = msg.item_type;
 
       // Print out the message type, details and user for debugging purposes.
-      console.log(type, msg, user.username);
+      //console.log(type, msg, user.username);
 
-      // If we don't have a message containing text...
-      if (!msg.text) {
-        // Skip
-        return;
-      }
+      let converted = await convertMessage(type, msg);
 
       // Now that we have a message, send them to discord.
-      callback(name, avatar, msg.text, mapping.discord);
+      callback(name, avatar, converted, mapping.discord);
     });
 
     // Now that we have processed all the messages, set the last
     // time we checked for messages to be the time the LAST message
     // was sent in the chat.
-    var newTimestamp = parseInt(messages[messages.length - 1].timestamp);
+    let newTimestamp = parseInt(messages[messages.length - 1].timestamp);
     lastUpdate.set(newTimestamp);
   });
+}
+
+async function convertMessage(type, msg) {
+  switch(type) {
+    case "media":
+      let shortMedia = await tinyurl.shorten(msg.media.image_versions2.candidates[0].url);
+      return shortMedia;
+    case "like":
+      return msg.like;
+    case "animated_media":
+      let mediaObj = msg.animated_media.images
+      let shortGif = await tinyurl.shorten(mediaObj[Object.keys(mediaObj)[0]].url)
+      return shortGif;
+    case "text":
+      return msg.text;
+    case "action_log":
+      return msg.action_log.description;
+    case "placeholder":
+      if (msg.placeholder.title == "Post Unavailable") {
+        return "`[SHARED POST] This post is unavailable due to it's privacy settings.`";
+      }
+      return "`[SHARED POST] This post is unavailable.`";
+    case "media_share":
+      let postObj = msg.media_share;
+      if (postObj.image_versions2.candidates.length <= 0) { return "`[SHARED POST] This post type is unsupported.`"; }
+      let short = await tinyurl.shorten(postObj.image_versions2.candidates[0].url);
+      let text = `\`[SHARED POST] This post was posted by @${postObj.user.username}.`;
+      if (postObj.caption) { text += ` Caption: ${postObj.caption.text}`; }
+      text += `\` ${short}`;
+      return text;
+    default:
+      console.log("UNSUPPORTED MESSAGE TYPE", type, msg);
+      return "";
+  }
 }

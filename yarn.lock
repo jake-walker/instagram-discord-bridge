@@ -475,6 +475,11 @@ stealthy-require@^1.1.1:
   resolved "https://registry.yarnpkg.com/stealthy-require/-/stealthy-require-1.1.1.tgz#35b09875b4ff49f26a777e509b3090a3226bf24b"
   integrity sha1-NbCYdbT/SfJqd35QmzCQoyJr8ks=
 
+tinyurl@^1.1.4:
+  version "1.1.4"
+  resolved "https://registry.yarnpkg.com/tinyurl/-/tinyurl-1.1.4.tgz#b44eed1573136cbec6a019c4ada914043cb31505"
+  integrity sha512-q4/8DGddX1R9g3SvJtUu6t5xii4cSOawdubt1KD0wVIro0xoH5NCzmTf8FEYidpnuPvkcbnbgOomAc9L7jwHGQ==
+
 tlds@^1.203.0:
   version "1.203.1"
   resolved "https://registry.yarnpkg.com/tlds/-/tlds-1.203.1.tgz#4dc9b02f53de3315bc98b80665e13de3edfc1dfc"

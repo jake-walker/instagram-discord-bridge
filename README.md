@@ -77,3 +77,26 @@ module.exports = {
   }
 }
 ```
+
+## Supported Message Types
+
+Both Discord and Instagram have slightly different message types (for example, Instagram has normal text messages, embedded posts, etc...), this means that extra conversion is needed to send an Instagram embedded post to a Discord image. Here are the message types that I am aware of and whether they work or not.
+
+### Instagram
+
+| Type | Working? |
+| ---- | -------- |
+| **Image** (using the 'Gallery' button) | Yes |
+| **Image** (using the Blue Camera button) | No (WIP) |
+| **Video** (using the Blue Camera button) | No |
+| **'Big' Like** (using the plus then the heart button) | Yes |
+| **GIF** (using the plus then GIF button) | Yes |
+| **Text** (normal message) | Yes |
+| **Action** (e.g hearting a message) | Maybe _(implemented but doesn't seem to work)_ |
+| **Post Embed** (going to a post then tapping the plane) | Yes |
+
+### Discord
+
+| Type | Working? |
+| ---- | -------- |
+| **Text** | Yes |
