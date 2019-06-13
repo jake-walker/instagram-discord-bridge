@@ -71,7 +71,7 @@ module.exports.threadNames = async () => {
 }
 
 // Function to send a message to specific thread
-module.exports.send = (name, content, targetThread) => {
+module.exports.send = (name="", content, targetThread) => {
   log("Forwarding message to Instagram...");
   log("Sending standard message...");
   // Get the individual thread
@@ -79,7 +79,11 @@ module.exports.send = (name, content, targetThread) => {
   // If the thread doesn't exist, skip
   if (!thread) { return; }
   // Send the message to the thread
-  thread.broadcastText(`[${name}]: ${content}`);
+  if (name != "") {
+    thread.broadcastText(`[${name}]: ${content}`);
+  } else {
+    thread.broadcastText(content);
+  }
   log("Sent!");
 }
 
@@ -130,7 +134,7 @@ async function handleMessages(threads, callback) {
       let converted = await convertMessage(type, msg);
 
       // Now that we have a message, send them to discord.
-      callback(name, avatar, converted, mapping.discord);
+      callback(name, avatar, converted, mapping.discord, mapping.instagram);
     });
 
     // Now that we have processed all the messages, set the last

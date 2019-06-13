@@ -30,11 +30,11 @@ module.exports.setup = async (msgSent) => {
 }
 
 // Function to send a message to specific channel
-module.exports.send = (name, avatar, content, targetChannel) => {
+module.exports.send = (name="", avatar="", content, targetChannel) => {
   log("Forwarding message to Discord...");
   // Check if we have a webhook available to use from
   // the config (this is preferred).
-  if (config.webhooks.hasOwnProperty(targetChannel)) {
+  if (config.webhooks.hasOwnProperty(targetChannel) && (name != "" && avatar != "")) {
     log("Sending webhook message...");
     // Split the webhook info up into the ID and token.
     const hookInfo = config.webhooks[targetChannel].split("/");
@@ -57,7 +57,11 @@ module.exports.send = (name, avatar, content, targetChannel) => {
     if (!channel) { return; }
     // Send a message to the channel with a bold username and
     // the content.
-    channel.send(`**[${name}]** ${content}`);
+    if (name != "") {
+      channel.send(`**[${name}]** ${content}`);
+    } else {
+      channel.send(content);
+    }
   }
   log("Sent!");
 }
@@ -91,7 +95,7 @@ client.on("message", async (msg) => {
   }
 
   // Send the message information over to be sent on Instagram as a message.
-  callback(name, formatted, mapping.instagram);
+  callback(name, formatted, mapping.instagram, mapping.discord);
 });
 
 async function formatMessage(msg) {
