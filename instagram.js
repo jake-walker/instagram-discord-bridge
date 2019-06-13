@@ -163,8 +163,16 @@ async function convertMessage(type, msg) {
       return "`[SHARED POST] This post is unavailable.`";
     case "media_share":
       let postObj = msg.media_share;
-      if (postObj.image_versions2.candidates.length <= 0) { return "`[SHARED POST] This post type is unsupported.`"; }
-      let short = await tinyurl.shorten(postObj.image_versions2.candidates[0].url);
+      let postUrl = "";
+      if (postObj.carousel_media) {
+        postUrl = postObj.carousel_media[0].image_versions2.candidates[0].url;
+      } else if (postObj.image_versions2) {
+        postUrl = postObj.image_versions2.candidates[0].url;
+      } else {
+        console.log("UNSUPPORTED POST TYPE", type, msg);
+        return "`[SHARED POST] This post type is unsupported.`";
+      }
+      let short = await tinyurl.shorten(postUrl);
       let text = `\`[SHARED POST] This post was posted by @${postObj.user.username}.`;
       if (postObj.caption) { text += ` Caption: ${postObj.caption.text}`; }
       text += `\` ${short}`;
