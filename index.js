@@ -28,6 +28,8 @@ instagram.setup((name, avatar, content, targetChannel, fromThread) => {
     }
   }
 
+  if (content == "") { return; }
+
   // When a message is received from an Instagram chat of interest,
   // send the message to Discord, specifying the name of the user,
   // the user's avatar, the content of the message and the channel(s),
@@ -45,6 +47,8 @@ discord.setup((name, content, targetThread, fromChannel) => {
       return;
     }
   }
+
+  if (content == "") { return; }
 
   // When a message is received from a Discord channel of interest,
   // send the message to Instagram, specifying the name of the user,

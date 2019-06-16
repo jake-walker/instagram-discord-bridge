@@ -158,8 +158,6 @@ async function convertMessage(type, msg) {
       return shortGif;
     case "text":
       return msg.text;
-    case "action_log":
-      return msg.action_log.description;
     case "placeholder":
       if (msg.placeholder.title == "Post Unavailable") {
         return "`[SHARED POST] This post is unavailable due to it's privacy settings.`";
