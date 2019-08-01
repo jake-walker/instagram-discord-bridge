@@ -16,7 +16,7 @@ function log(msg) {
 
 // Global variable for storing the callback for use in any of the
 // functions.
-var callback = null;
+let callback = null;
 
 // Setup function (runs once at start) with a function to run when
 // a message is received.
@@ -32,14 +32,17 @@ module.exports.setup = async (msgSent) => {
 // Function to send a message to specific channel
 module.exports.send = (name="", avatar="", content, targetChannel) => {
   log("Forwarding message to Discord...");
+
   // Check if we have a webhook available to use from
   // the config (this is preferred).
-  if (config.webhooks.hasOwnProperty(targetChannel) && (name != "" && avatar != "")) {
+  if (config.webhooks.hasOwnProperty(targetChannel) && (name !== "" && avatar !== "")) {
     log("Sending webhook message...");
     // Split the webhook info up into the ID and token.
     const hookInfo = config.webhooks[targetChannel].split("/");
+
     // If we have more/less than we are expecting, skip.
-    if (hookInfo.length != 2) { return; }
+    if (hookInfo.length !== 2) { return; }
+
     // Create a new webhook client for interacting with the webhook.
     const hook = new Discord.WebhookClient(hookInfo[0], hookInfo[1]);
     // Send the message content along with the Instagram user's username
@@ -52,17 +55,20 @@ module.exports.send = (name="", avatar="", content, targetChannel) => {
     // If we don't have a webhook available, send as a standard message.
     log("Sending standard message...");
     // Find the channel that we need to send to.
-    var channel = client.channels.find((c) => c.id == targetChannel);
+    const channel = client.channels.find((c) => c.id === targetChannel);
+
     // If we couldn't find the channel, skip.
     if (!channel) { return; }
+
     // Send a message to the channel with a bold username and
     // the content.
-    if (name != "") {
+    if (name !== "") {
       channel.send(`**[${name}]** ${content}`);
     } else {
       channel.send(content);
     }
   }
+
   log("Sent!");
 }
 
@@ -77,19 +83,21 @@ client.on("ready", () => {
 client.on("message", async (msg) => {
   // Get a 'mapping' from the config corresponding to the channel that the message
   // is being sent from.
-  var mapping = config.mappings.find((m) => m.discord == msg.channel.id);
+  const mapping = config.mappings.find((m) => m.discord === msg.channel.id);
+
   // If we couldn't find a 'mapping' (i.e this channel isn't setup in the config),
   // OR the message is sent by us OR the message was sent by a bot (which could be
   // also one of our messages if we used a webhook), then IGNORE the message (skip).
-  if (!mapping || msg.author.id == client.user.id || msg.author.bot) { return; }
+  if (!mapping || msg.author.id === client.user.id || msg.author.bot) { return; }
   
-  let formatted = await formatMessage(msg);
+  const formatted = await formatMessage(msg);
 
   // Get the name of the user that sent the message
-  var name = msg.author.username;
+  let name = msg.author.username;
+
   // If the bot is in a Discord server, then we can get the *member* that sent the
   // message
-  if (!!msg.member) {
+  if (msg.member) {
     // Take the user's *nickname* from the server that the message was sent from.
     name = msg.member.nickname || name;
   }
@@ -103,8 +111,8 @@ async function formatMessage(msg) {
 
   output += msg.cleanContent;
 
-  for (let [key, value] of msg.attachments.entries()) {
-    let shorten = await tinyurl.shorten(value.url);
+  for (const [key, value] of msg.attachments.entries()) {
+    const shorten = await tinyurl.shorten(value.url);
     output += ` ${shorten}`;
   }
 
