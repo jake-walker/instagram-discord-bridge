@@ -1,0 +1,18 @@
+trigger:
+  batch: true
+  branches:
+    include:
+    - master
+pr:
+  branches:
+    include:
+    - master
+
+pool:
+  vmImage: 'ubuntu-latest'
+
+steps:
+- script: |
+    npm install
+    npm run test
+  displayName: 'npm install and test'
