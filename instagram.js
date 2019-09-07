@@ -3,7 +3,7 @@
 
 // Import Instagram API
 const apiClient = require('instagram-private-api').IgApiClient;
-const config = require("./config");
+const config = require("./bot-config");
 const lastUpdate = require("./lastupdate");
 const tinyurl = require("tinyurl");
 const signale = require("signale");

@@ -7,7 +7,7 @@ const tinyurl = require("tinyurl");
 const signale = require("signale");
 // Create a new client
 const client = new Discord.Client();
-const config = require("./config");
+const config = require("./bot-config");
 
 // Global variable for storing the callback for use in any of the
 // functions.
