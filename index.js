@@ -24,7 +24,7 @@ instagram.setup((name, avatar, content, targetChannel, fromThread) => {
 	const command = parseCommand(content);
 
 	if (command.command !== false) {
-		if (commands.hasOwnProperty(command.command)) {
+		if (Object.prototype.hasOwnProperty.call(commands, command.command)) {
 			const result = commands[command.command](command.args);
 			instagram.send("", result, fromThread);
 			return;
@@ -47,7 +47,7 @@ discord.setup((name, content, targetThread, fromChannel) => {
 	const command = parseCommand(content);
 
 	if (command.command !== false) {
-		if (commands.hasOwnProperty(command.command)) {
+		if (Object.prototype.hasOwnProperty.call(commands, command.command)) {
 			const result = commands[command.command](command.args);
 			discord.send("", "", result, fromChannel);
 			return;

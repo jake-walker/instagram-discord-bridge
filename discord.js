@@ -4,15 +4,10 @@
 // Import the Discord library
 const Discord = require("discord.js");
 const tinyurl = require("tinyurl");
+const signale = require("signale");
 // Create a new client
 const client = new Discord.Client();
 const config = require("./config");
-
-// Simple log function which adds a prefix for easy identification
-// of the part of the program sending the log message.
-function log(msg) {
-  console.log(`D> ${msg}`);
-}
 
 // Global variable for storing the callback for use in any of the
 // functions.
@@ -21,7 +16,7 @@ let callback = null;
 // Setup function (runs once at start) with a function to run when
 // a message is received.
 module.exports.setup = async (msgSent) => {
-  log("Setting up Discord...");
+  signale.info("Setting up Discord...");
   // Login with the token contained in the config. This will
   // automatically start the bot listening for messages.
   client.login(config.discord.token);
@@ -31,12 +26,12 @@ module.exports.setup = async (msgSent) => {
 
 // Function to send a message to specific channel
 module.exports.send = (name="", avatar="", content, targetChannel) => {
-  log("Forwarding message to Discord...");
+  signale.debug("Forwarding message to Discord...");
 
   // Check if we have a webhook available to use from
   // the config (this is preferred).
-  if (config.webhooks.hasOwnProperty(targetChannel) && (name !== "" && avatar !== "")) {
-    log("Sending webhook message...");
+  if (Object.prototype.hasOwnProperty.call(config.webhooks, targetChannel) && (name !== "" && avatar !== "")) {
+    signale.debug("Sending webhook message...");
     // Split the webhook info up into the ID and token.
     const hookInfo = config.webhooks[targetChannel].split("/");
 
@@ -53,7 +48,7 @@ module.exports.send = (name="", avatar="", content, targetChannel) => {
     });
   } else {
     // If we don't have a webhook available, send as a standard message.
-    log("Sending standard message...");
+    signale.debug("Sending standard message...");
     // Find the channel that we need to send to.
     const channel = client.channels.find((c) => c.id === targetChannel);
 
@@ -69,13 +64,13 @@ module.exports.send = (name="", avatar="", content, targetChannel) => {
     }
   }
 
-  log("Sent!");
+  signale.debug("Sent!");
 }
 
 // This function runs when the bot logged in and is ready
 // to go.
 client.on("ready", () => {
-  log(`Logged in as ${client.user.tag}!`);
+  signale.info(`Logged in as ${client.user.tag}!`);
 });
 
 // This function runs whenever the bot receives any message from
@@ -111,7 +106,7 @@ async function formatMessage(msg) {
 
   output += msg.cleanContent;
 
-  for (const [key, value] of msg.attachments.entries()) {
+  for (const [, value] of msg.attachments.entries()) {
     const shorten = await tinyurl.shorten(value.url);
     output += ` ${shorten}`;
   }

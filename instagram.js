@@ -6,6 +6,7 @@ const apiClient = require('instagram-private-api').IgApiClient;
 const config = require("./config");
 const lastUpdate = require("./lastupdate");
 const tinyurl = require("tinyurl");
+const signale = require("signale");
 
 // Create a new Instagram API instance
 const api = new apiClient();
@@ -13,30 +14,24 @@ const api = new apiClient();
 // List of user IDs to ignore messages from (the current account is added to this list)
 const ignoreList = [];
 
-// Simple log function which adds a prefix for easy identification
-// of the part of the program sending the log message.
-function log(msg) {
-  console.log(`I> ${msg}`);
-}
-
 // Setup function (runs once at start) with a function to run when
 // a message is received.
 module.exports.setup = async (msgReceived) => {
-  log("Setting up Instagram...");
+  signale.info("Setting up Instagram...");
   // Create a 'virtual' device for running Instagram.
   api.state.generateDevice(config.instagram.username);
-  log("Logging into Instagram...");
+  signale.debug("Logging into Instagram...");
   // Login with the username and password from config file, wait until done.
   await api.account.login(config.instagram.username, config.instagram.password);
   const user = await api.account.currentUser();
-  log(`Logged in as ${user.username} (ID: ${user.pk})`);
+  signale.info(`Logged in as ${user.username} (ID: ${user.pk})`);
 
   // Add the current user to the ignore list so our messages don't get resent
   ignoreList.push(user.pk);
 
   // Print chat thread IDs on startup for easy configuration
   const unsetThreads = await this.threadNames();
-  console.log("Available chat threads", unsetThreads);
+  signale.debug("Available chat threads", unsetThreads);
 
   // Function to run every second to check for new messages.
   return setInterval(async () => {
@@ -72,8 +67,8 @@ module.exports.threadNames = async () => {
 
 // Function to send a message to specific thread
 module.exports.send = (name="", content, targetThread) => {
-  log("Forwarding message to Instagram...");
-  log("Sending standard message...");
+  signale.debug("Forwarding message to Instagram...");
+  signale.debug("Sending standard message...");
   // Get the individual thread
   const thread = api.entity.directThread(targetThread);
 
@@ -87,7 +82,7 @@ module.exports.send = (name="", content, targetThread) => {
     thread.broadcastText(content);
   }
 
-  log("Sent!");
+  signale.debug("Sent!");
 }
 
 // Function to get all of the chat threads
@@ -152,24 +147,34 @@ async function handleMessages(threads, callback) {
 
 async function convertMessage(type, msg) {
   switch(type) {
-    case "media":
+    case "media": {
       const shortMedia = await tinyurl.shorten(msg.media.image_versions2.candidates[0].url);
       return shortMedia;
-    case "like":
+    }
+
+    case "like": {
       return msg.like;
-    case "animated_media":
+    }
+
+    case "animated_media": {
       const mediaObj = msg.animated_media.images
       const shortGif = await tinyurl.shorten(mediaObj[Object.keys(mediaObj)[0]].url)
       return shortGif;
-    case "text":
+    }
+
+    case "text": {
       return msg.text;
-    case "placeholder":
+    }
+
+    case "placeholder": {
       if (msg.placeholder.title === "Post Unavailable") {
         return "`[SHARED POST] This post is unavailable due to it's privacy settings.`";
       }
 
       return "`[SHARED POST] This post is unavailable.`";
-    case "media_share":
+    }
+
+    case "media_share": {
       const postObj = msg.media_share;
       let postUrl = "";
 
@@ -178,7 +183,7 @@ async function convertMessage(type, msg) {
       } else if (postObj.image_versions2) {
         postUrl = postObj.image_versions2.candidates[0].url;
       } else {
-        console.log("UNSUPPORTED POST TYPE", type, msg);
+        signale.warn("UNSUPPORTED POST TYPE", type, msg);
         return "`[SHARED POST] This post type is unsupported.`";
       }
 
@@ -189,8 +194,11 @@ async function convertMessage(type, msg) {
 
       text += `\` ${short}`;
       return text;
-    default:
-      console.log("UNSUPPORTED MESSAGE TYPE", type, msg);
+    }
+    
+    default: {
+      signale.warn("UNSUPPORTED MESSAGE TYPE", type, msg);
       return "";
+    }
   }
 }
