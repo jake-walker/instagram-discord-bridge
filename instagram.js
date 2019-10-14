@@ -3,10 +3,13 @@
 
 // Import Instagram API
 const apiClient = require('instagram-private-api').IgApiClient;
+const { IgCheckpointError } = require("instagram-private-api");
 const config = require("./bot-config");
 const lastUpdate = require("./lastupdate");
 const tinyurl = require("tinyurl");
 const signale = require("signale");
+const Bluebird = require("bluebird");
+const inquirer = require("inquirer");
 
 // Create a new Instagram API instance
 const api = new apiClient();
@@ -22,24 +25,39 @@ module.exports.setup = async (msgReceived) => {
   api.state.generateDevice(config.instagram.username);
   signale.debug("Logging into Instagram...");
   // Login with the username and password from config file, wait until done.
-  await api.account.login(config.instagram.username, config.instagram.password);
-  const user = await api.account.currentUser();
-  signale.info(`Logged in as ${user.username} (ID: ${user.pk})`);
+  Bluebird.try(async () => {
+    await api.account.login(config.instagram.username, config.instagram.password);
+  }).then(async () => {
+    const user = await api.account.currentUser();
+    signale.info(`Logged in as ${user.username} (ID: ${user.pk})`);
 
-  // Add the current user to the ignore list so our messages don't get resent
-  ignoreList.push(user.pk);
+    // Add the current user to the ignore list so our messages don't get resent
+    ignoreList.push(user.pk);
 
-  // Print chat thread IDs on startup for easy configuration
-  const unsetThreads = await this.threadNames();
-  signale.debug("Available chat threads", unsetThreads);
+    // Print chat thread IDs on startup for easy configuration
+    const unsetThreads = await this.threadNames();
+    signale.debug("Available chat threads", unsetThreads);
 
-  // Function to run every second to check for new messages.
-  return setInterval(async () => {
-    // Get *all* chat threads from Instagram
-    const threads = await getThreads();
-    // Filter through messages in the threads, checking for new ones.
-    handleMessages(threads, msgReceived);
-  }, 1000);
+    // Function to run every second to check for new messages.
+    return setInterval(async () => {
+      // Get *all* chat threads from Instagram
+      const threads = await getThreads();
+      // Filter through messages in the threads, checking for new ones.
+      handleMessages(threads, msgReceived);
+    }, 1000);
+  }).catch(IgCheckpointError, async () => {
+    signale.info(api.state.checkpoint);
+    await api.challenge.auto(true);
+    signale.info(api.state.checkpoint);
+    const { code } = await inquirer.prompt([
+      {
+        type: "input",
+        name: "code",
+        message: "Enter Code"
+      },
+    ]);
+    signale.info(await api.challenge.sendSecurityCode(code));
+  });
 }
 
 // Temporary function to get the thread ids for all the different
