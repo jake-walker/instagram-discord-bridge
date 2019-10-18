@@ -213,6 +213,10 @@ async function convertMessage(type, msg) {
       text += `\` ${short}`;
       return text;
     }
+
+    case "link": {
+      return msg.link.text;
+    }
     
     default: {
       signale.warn("UNSUPPORTED MESSAGE TYPE", type, msg);
