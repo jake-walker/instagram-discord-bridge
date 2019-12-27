@@ -1,6 +1,6 @@
 # Instagram Discord Bridge
 
-<a href="https://dev.azure.com/jakewalker/Instagram%20Discord%20Bridge/_build?definitionId=4"><img alt="Azure DevOps Build Status" src="https://img.shields.io/azure-devops/build/jakewalker/b8e8016b-3f91-4cda-80fc-f3f45b7d4ddc/4/master?style=flat-square"></a>
+<a href="https://ci.jakewalker.xyz/jake-walker/instagram-discord-bridge"><img alt="Drone Build" src="https://img.shields.io/drone/build/jake-walker/instagram-discord-bridge/master?server=https%3A%2F%2Fci.jakewalker.xyz&style=flat-square"></a>
 
 This is a bot written in Node.js which takes messages from Instagram chats and forwards them to Discord and vice-versa.
 

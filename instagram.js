@@ -26,8 +26,25 @@ module.exports.setup = async (msgReceived) => {
   signale.debug("Logging into Instagram...");
   // Login with the username and password from config file, wait until done.
   Bluebird.try(async () => {
-    await api.account.login(config.instagram.username, config.instagram.password);
-  }).then(async () => {
+    signale.debug("Trying normal login...");
+    const auth = await api.account.login(config.instagram.username, config.instagram.password);
+    signale.debug(auth);
+  }).catch(IgCheckpointError, async () => {
+    signale.debug("Login failed! Requesting code...");
+    signale.info(api.state.checkpoint);
+    await api.challenge.auto(true);
+    signale.info(api.state.checkpoint);
+    const { code } = await inquirer.prompt([
+      {
+        type: "input",
+        name: "code",
+        message: "Enter Code"
+      },
+    ]);
+    signale.debug(`Sending security code '${code}'...`);
+    const auth = await api.challenge.sendSecurityCode(code);
+    signale.debug(auth);
+  }).finally(async () => {
     const user = await api.account.currentUser();
     signale.info(`Logged in as ${user.username} (ID: ${user.pk})`);
 
@@ -45,18 +62,6 @@ module.exports.setup = async (msgReceived) => {
       // Filter through messages in the threads, checking for new ones.
       handleMessages(threads, msgReceived);
     }, 1000);
-  }).catch(IgCheckpointError, async () => {
-    signale.info(api.state.checkpoint);
-    await api.challenge.auto(true);
-    signale.info(api.state.checkpoint);
-    const { code } = await inquirer.prompt([
-      {
-        type: "input",
-        name: "code",
-        message: "Enter Code"
-      },
-    ]);
-    signale.info(await api.challenge.sendSecurityCode(code));
   });
 }
 

@@ -1,6 +1,7 @@
 const instagram = require("./instagram");
 const discord = require("./discord");
 const commands = require("./commands");
+const signale = require("signale");
 
 function parseCommand(text) {
 	const output = {
@@ -39,7 +40,11 @@ instagram.setup((name, avatar, content, targetChannel, fromThread) => {
 	// send the message to Discord, specifying the name of the user,
 	// the user's avatar, the content of the message and the channel(s),
 	// to send the message to.
-	discord.send(name, avatar, content, targetChannel);
+	try {
+		discord.send(name, avatar, content, targetChannel);
+	} catch(error) {
+		signale.error(error);
+	}
 });
 
 // Setup the Discord 'Module', with callback for new messages
@@ -62,5 +67,9 @@ discord.setup((name, content, targetThread, fromChannel) => {
 	// send the message to Instagram, specifying the name of the user,
 	// the content of the message and the thread ids to send the message
 	// to.
-	instagram.send(name, content, targetThread);
+	try {
+		instagram.send(name, content, targetThread);
+	} catch(error) {
+		signale.error(error);
+	}
 });
