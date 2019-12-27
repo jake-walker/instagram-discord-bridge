@@ -1,0 +1,11 @@
+---
+kind: pipeline
+type: docker
+name: default
+
+steps:
+  - name: test
+    image: node:alpine
+    commands:
+      - NODE_ENV=development yarn
+      - yarn run test
