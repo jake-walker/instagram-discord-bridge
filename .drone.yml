@@ -9,3 +9,11 @@ steps:
     commands:
       - NODE_ENV=development yarn
       - yarn run test
+  - name: release
+    image: plugins/docker
+    settings:
+      username: jakewalker
+      password:
+        from_secret: docker_password
+      repo: jakewalker/instagram-discord-bridge
+      tags: latest
