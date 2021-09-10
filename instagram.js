@@ -203,10 +203,10 @@ async function convertMessage(type, msg) {
       let short = "";
 
       if (postObj.carousel_media) {
-        let objId = postObj.id.substring(0,postObj.id.indexOf("_"));
+        const objId = postObj.id.substring(0,postObj.id.indexOf("_"));
         short = "https://www.instagram.com/p/" + idConverter.instagramIdToUrlSegment(objId) + "/";
       } else if (postObj.image_versions2) {
-        let postUrl = postObj.image_versions2.candidates[0].url;
+        const postUrl = postObj.image_versions2.candidates[0].url;
         short = await tinyurl.shorten(postUrl);
       } else {
         signale.warn("UNSUPPORTED POST TYPE", type, msg);
