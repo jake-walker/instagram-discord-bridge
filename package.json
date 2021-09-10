@@ -10,6 +10,7 @@
     "discord.js": "^11.5.0",
     "git-rev-sync": "^1.12.0",
     "inquirer": "^7.0.0",
+    "instagram-id-to-url-segment": "^0.0.0",
     "instagram-private-api": "^1.8.0",
     "signale": "^1.4.0",
     "tinyurl": "^1.1.4"

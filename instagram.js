@@ -10,6 +10,7 @@ const tinyurl = require("tinyurl");
 const signale = require("signale");
 const Bluebird = require("bluebird");
 const inquirer = require("inquirer");
+const idConverter = require("instagram-id-to-url-segment");
 
 // Create a new Instagram API instance
 const api = new apiClient();
@@ -199,18 +200,19 @@ async function convertMessage(type, msg) {
 
     case "media_share": {
       const postObj = msg.media_share;
-      let postUrl = "";
+      let short = "";
 
       if (postObj.carousel_media) {
-        postUrl = postObj.carousel_media[0].image_versions2.candidates[0].url;
+        let objId = postObj.id.substring(0,postObj.id.indexOf("_"));
+        short = "https://www.instagram.com/p/" + idConverter.instagramIdToUrlSegment(objId) + "/";
       } else if (postObj.image_versions2) {
-        postUrl = postObj.image_versions2.candidates[0].url;
+        let postUrl = postObj.image_versions2.candidates[0].url;
+        short = await tinyurl.shorten(postUrl);
       } else {
         signale.warn("UNSUPPORTED POST TYPE", type, msg);
         return "`[SHARED POST] This post type is unsupported.`";
       }
 
-      const short = await tinyurl.shorten(postUrl);
       let text = `\`[SHARED POST] This post was posted by @${postObj.user.username}.`;
 
       if (postObj.caption) { text += ` Caption: ${postObj.caption.text}`; }
