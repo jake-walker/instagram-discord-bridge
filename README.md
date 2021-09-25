@@ -4,6 +4,8 @@
 
 This is a bot written in Node.js which takes messages from Instagram chats and forwards them to Discord and vice-versa.
 
+> I do not use this project any more, so I am not actively maintaining it or making large changes. I will try my best to help out with problems and small fixes though.
+
 > ⚠️ **This bot is very janky at the moment.** The code is definitely not written in the best way (like checking messages from Instagram). Check the [known problems](#known-problems) section for more info.
 
 I am using this on a school Discord server, where people might not want to use Discord but can still join in from a linked Instagram chat (as Instagram is quite a popular chat method for people of my age).
