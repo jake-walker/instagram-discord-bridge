@@ -30,7 +30,7 @@ yarn install
 
 ### Configuring
 
-Edit `config.js`. It has comments for describing what everything means.
+Edit `bot-config.js`. It has comments for describing what everything means.
 
 **Please note:**
 
