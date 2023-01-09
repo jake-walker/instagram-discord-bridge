@@ -166,6 +166,11 @@ bcrypt-pbkdf@^1.0.0:
   dependencies:
     tweetnacl "^0.14.3"
 
+bignumber.js@^2.0.7:
+  version "2.4.0"
+  resolved "https://registry.yarnpkg.com/bignumber.js/-/bignumber.js-2.4.0.tgz#838a992da9f9d737e0f4b2db0be62bb09dd0c5e8"
+  integrity sha512-uw4ra6Cv483Op/ebM0GBKKfxZlSmn6NgFRby5L3yGTlunLj53KQgndDlqy2WVFOwgvurocApYkSud0aO+mvrpQ==
+
 bignumber.js@^7.0.0:
   version "7.2.1"
   resolved "https://registry.yarnpkg.com/bignumber.js/-/bignumber.js-7.2.1.tgz#80c048759d826800807c4bfd521e50edbba57a5f"
@@ -765,6 +770,13 @@ inquirer@^7.0.0:
     strip-ansi "^5.1.0"
     through "^2.3.6"
 
+instagram-id-to-url-segment@^0.0.0:
+  version "0.0.0"
+  resolved "https://registry.yarnpkg.com/instagram-id-to-url-segment/-/instagram-id-to-url-segment-0.0.0.tgz#1936875dceed74102088ae183d47d47c598ee5ba"
+  integrity sha512-VNxNPraWE8Qu8S4nc+TXdCdl0G3DmtS8tLzw1qzSb8490UaVpNiFHigd2OEW7JdRi8JiqXC9UwDQ7+4MrHhL6g==
+  dependencies:
+    bignumber.js "^2.0.7"
+
 instagram-private-api@^1.8.0:
   version "1.37.1"
   resolved "https://registry.yarnpkg.com/instagram-private-api/-/instagram-private-api-1.37.1.tgz#673cb9c001c224c5adc600b64fd1eea872ab60f8"
@@ -968,9 +980,9 @@ long@^4.0.0:
   integrity sha512-XsP+KhQif4bjX1kbuSiySJFNAehNxgLb6hPRGJ9QsUr8ajHkuXGdrHmFUTUUXhDwVX2R5bY4JNZEwbUiMhV+MA==
 
 luxon@^1.12.1:
-  version "1.21.3"
-  resolved "https://registry.yarnpkg.com/luxon/-/luxon-1.21.3.tgz#f1d5c2a7e855d039836cf4954f883ecac8fc4727"
-  integrity sha512-lLRwNcNnkZLuv13A1FUuZRZmTWF7ro2ricYvb0L9cvBYHPvZhQdKwrYnZzi103D2XKmlVmxWpdn2wfIiOt2YEw==
+  version "1.28.1"
+  resolved "https://registry.yarnpkg.com/luxon/-/luxon-1.28.1.tgz#528cdf3624a54506d710290a2341aa8e6e6c61b0"
+  integrity sha512-gYHAa180mKrNIUJCbwpmD0aTu9kV0dREDrwNnuyFAsO1Wt0EVYSZelPnJlbj9HplzXX/YWXHFTL45kvZ53M0pw==
 
 map-obj@^4.0.0:
   version "4.1.0"
